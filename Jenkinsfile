@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     environment {
-        HARBOR_REGISTRY = '127.0.0.1:8001'
+        HARBOR_REGISTRY = 'host.docker.internal:8001'
         HARBOR_PROJECT  = 'web3-apps'
         APP_NAME        = 'online-shopping'
         HARBOR_CREDS_ID = 'harbor'
@@ -26,14 +26,27 @@ pipeline {
             }
         }
         
-        stage('Docker Push & Scan Injection') {
+        stage('Login & Push Harbor') {
+
             steps {
-                script {
-                    // Authenticate and Push using isolated robot credentials
-                    withCredentials([usernamePassword(credentialsId: env.HARBOR_CREDS_ID, usernameVariable: 'ROBOT_USER', passwordVariable: 'ROBOT_PASS')]) {
-                        sh 'echo "${ROBOT_PASS}" | docker login ${HARBOR_REGISTRY} -u "${ROBOT_USER}" --password-stdin'
-                        sh "docker push ${env.FULL_IMAGE_NAME}"
-                    }
+
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: ROBOT_CREDS,
+                        usernameVariable: 'HARBOR_USER',
+                        passwordVariable: 'HARBOR_PASS'
+                    )
+                ]) {
+
+                    sh """
+                        echo "\$HARBOR_PASS" | docker login ${HARBOR_REGISTRY} \
+                        --username "\$HARBOR_USER" \
+                        --password-stdin
+
+                        docker push ${FULL_IMAGE_NAME}
+
+                        docker logout ${HARBOR_REGISTRY}
+                    """
                 }
             }
         }
