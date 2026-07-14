@@ -38,15 +38,15 @@ pipeline {
                     )
                 ]) {
 
-                    sh """
-                        echo "\$ROBOT_PASS" | docker login ${HARBOR_REGISTRY} \
-                        --username "\$ROBOT_USER" \
+                    sh '''
+                        echo "$ROBOT_PASS" | docker login harbor.justtrytech.com \
+                        -u "$ROBOT_USER" \
                         --password-stdin
 
                         docker push ${FULL_IMAGE_NAME}
 
                         docker logout ${HARBOR_REGISTRY}
-                    """
+                    '''
                 }
             }
         }
