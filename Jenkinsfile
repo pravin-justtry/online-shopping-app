@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     environment {
-        HARBOR_REGISTRY = 'nginx:8001'
+        HARBOR_REGISTRY = '127.0.0.1:8001'
         HARBOR_PROJECT  = 'web3-apps'
         APP_NAME        = 'online-shopping'
         HARBOR_CREDS_ID = 'harbor'
