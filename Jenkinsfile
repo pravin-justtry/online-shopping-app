@@ -32,15 +32,15 @@ pipeline {
 
                 withCredentials([
                     usernamePassword(
-                        credentialsId: ROBOT_CREDS,
-                        usernameVariable: 'HARBOR_USER',
-                        passwordVariable: 'HARBOR_PASS'
+                        credentialsId: HARBOR_CREDS_ID,
+                        usernameVariable: 'ROBOT_USER',
+                        passwordVariable: 'ROBOT_PASS'
                     )
                 ]) {
 
                     sh """
-                        echo "\$HARBOR_PASS" | docker login ${HARBOR_REGISTRY} \
-                        --username "\$HARBOR_USER" \
+                        echo "\$ROBOT_PASS" | docker login ${HARBOR_REGISTRY} \
+                        --username "\$ROBOT_USER" \
                         --password-stdin
 
                         docker push ${FULL_IMAGE_NAME}
@@ -57,14 +57,14 @@ pipeline {
                     echo "Awaiting completion of asynchronous Trivy scan on Harbor..."
                     sleep 15 // Give Trivy time to process the image push event
                     
-                    withCredentials([usernamePassword(credentialsId: env.HARBOR_CREDS_ID, usernameVariable: 'REG_USER', passwordVariable: 'REG_PASS')]) {
+                    withCredentials([usernamePassword(credentialsId: env.HARBOR_CREDS_ID, usernameVariable: 'ROBOT_USER', passwordVariable: 'ROBOT_PASS')]) {
                         // Correctly maps clean API endpoint coordinates via V2.0 specification
                         def apiEndpoint = "http://${env.HARBOR_REGISTRY}/api/v2.0/projects/${env.HARBOR_PROJECT}/repositories/${env.APP_NAME}/artifacts/${env.IMAGE_TAG}/additions/vulnerabilities"
                         
                         // FIXED: Replaced incorrect ROBOT variables with matching REG_USER/REG_PASS credentials 
                         def response = sh(
                             returnStdout: true,
-                            script: "curl -s -u '${REG_USER}:${REG_PASS}' -H 'Accept: application/vnd.security.vulnerability.report; version=1.1' '${apiEndpoint}'"
+                            script: "curl -s -u '${ROBOT_USER}:${ROBOT_PASS}' -H 'Accept: application/vnd.security.vulnerability.report; version=1.1' '${apiEndpoint}'"
                         ).trim()
                         
                         echo "Raw Vulnerability Response: ${response}"
