@@ -15,7 +15,7 @@ pipeline {
                     // Extract git short hash directly into target execution parameters
                     def gitHash = sh(returnStdout: true, script: "git rev-parse --short HEAD").trim()
                     env.IMAGE_TAG = "${BUILD_NUMBER}-${gitHash}"
-                    env.FULL_IMAGE_NAME = "${HARBOR_REGISTRY_IMAGE}/${HARBOR_PROJECT}/${APP_NAME}:${env.IMAGE_TAG}"
+                    env.FULL_IMAGE_NAME = "${HARBOR_REGISTRY}/${HARBOR_PROJECT}/${APP_NAME}:${env.IMAGE_TAG}"
                 }
             }
         }
