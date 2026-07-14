@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     environment {
-        HARBOR_REGISTRY = '192.168.1.11:8001'
+        HARBOR_REGISTRY = 'http://192.168.1.11:8001'
         HARBOR_PROJECT  = 'web3-apps'
         APP_NAME        = 'online-shopping'
         HARBOR_CREDS_ID = 'harbor'
@@ -59,7 +59,7 @@ pipeline {
                     
                     withCredentials([usernamePassword(credentialsId: env.HARBOR_CREDS_ID, usernameVariable: 'ROBOT_USER', passwordVariable: 'ROBOT_PASS')]) {
                         // Correctly maps clean API endpoint coordinates via V2.0 specification
-                        def apiEndpoint = "http://${env.HARBOR_REGISTRY}/api/v2.0/projects/${env.HARBOR_PROJECT}/repositories/${env.APP_NAME}/artifacts/${env.IMAGE_TAG}/additions/vulnerabilities"
+                        def apiEndpoint = "${env.HARBOR_REGISTRY}/api/v2.0/projects/${env.HARBOR_PROJECT}/repositories/${env.APP_NAME}/artifacts/${env.IMAGE_TAG}/additions/vulnerabilities"
                         
                         // FIXED: Replaced incorrect ROBOT variables with matching REG_USER/REG_PASS credentials 
                         def response = sh(
