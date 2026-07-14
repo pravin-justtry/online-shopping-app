@@ -64,7 +64,7 @@ pipeline {
                         // FIXED: Replaced incorrect ROBOT variables with matching REG_USER/REG_PASS credentials 
                         def response = sh(
                             returnStdout: true,
-                            script: "curl -s -u '${ROBOT_USER}:${ROBOT_PASS}' -H 'Accept: application/vnd.security.vulnerability.report; version=1.1' '${apiEndpoint}'"
+                            script: "curl -k -s -u '${ROBOT_USER}:${ROBOT_PASS}' -H 'Accept: application/vnd.security.vulnerability.report; version=1.1' '${apiEndpoint}'"
                         ).trim()
                         
                         echo "Raw Vulnerability Response: ${response}"
