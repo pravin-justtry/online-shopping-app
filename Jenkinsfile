@@ -31,7 +31,7 @@ pipeline {
                 script {
                     // Authenticate and Push using isolated robot credentials
                     withCredentials([usernamePassword(credentialsId: env.HARBOR_CREDS_ID, usernameVariable: 'ROBOT_USER', passwordVariable: 'ROBOT_PASS')]) {
-                        sh "echo '${ROBOT_PASS}' | docker login ${env.HARBOR_REGISTRY} -u '${ROBOT_USER}' --password-stdin"
+                        sh 'echo "${ROBOT_PASS}" | docker login ${HARBOR_REGISTRY} -u "${ROBOT_USER}" --password-stdin'
                         sh "docker push ${env.FULL_IMAGE_NAME}"
                     }
                 }
