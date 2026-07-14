@@ -44,7 +44,7 @@ pipeline {
                     echo "Awaiting completion of asynchronous Trivy scan on Harbor..."
                     sleep 15 // Give Trivy time to process the image push event
                     
-                    withCredentials([usernamePassword(credentialsId: env.HARBOR_CREDS_ID, usernameVariable: 'REG_USER', passwordVariable: 'REG_PASS')]) {
+                    withCredentials([usernamePassword(credentialsId: env.HARBOR_CREDS_ID, usernameVariable: 'ROBOT_USER', passwordVariable: 'ROBOT_PASS')]) {
                         // Query the Harbor Core API for the image report metrics
                         def apiEndpoint = "http://${env.HARBOR_REGISTRY}/api/v2.0/projects/${env.HARBOR_PROJECT}/repositories/${env.APP_NAME}/artifacts/${env.BUILD_NUMBER}-${env.GIT_SHORT_HASH}/additions/vulnerabilities"
                         
